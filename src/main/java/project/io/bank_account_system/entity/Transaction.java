@@ -9,14 +9,12 @@ public class Transaction {
         this.transactionId = transactionId;
         this.amount = amount;
     }
-
     public String getTransactionId(){
         return transactionId;
     }
     public double getAmount(){
         return amount;
     }
-
     public void setAmount(double amount) {
         this.amount = amount;
     }

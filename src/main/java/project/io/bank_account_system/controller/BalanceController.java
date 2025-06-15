@@ -32,13 +32,13 @@ public class BalanceController {
         if (absAmt < MIN_AMOUNT) {
             return ResponseEntity
                     .badRequest()
-                    .body("underlimit: transaction amount must be at least £" + MIN_AMOUNT);
+                    .body("Underlimit: transaction amount must be at least £" + MIN_AMOUNT);
         }
 
         if (absAmt > MAX_AMOUNT) {
             return ResponseEntity
                     .badRequest()
-                    .body("upperlimit: transaction amount must be at most £" + MAX_AMOUNT);
+                    .body("Upperlimit: transaction amount must be at most £" + MAX_AMOUNT);
         }
         String id = transactionRequest.getTransactionId() != null
                 ? transactionRequest.getTransactionId()

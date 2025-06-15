@@ -19,7 +19,6 @@ public class TransactionProducer {
         this.bankAccountService = bankAccountService;
     }
 
-    //@PostConstruct
     public void startTransactions(){
 
         Runnable creditTransaction = new Runnable() {
