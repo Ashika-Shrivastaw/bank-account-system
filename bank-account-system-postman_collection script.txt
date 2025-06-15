@@ -1,0 +1,54 @@
+Sample = Manual Testing with Postman Collection script
+
+Place below code in Pre-request script section
+
+let count = parseInt(pm.environment.get("txCount") || 0, 10) + 1;
+pm.environment.set("txCount", count);
+let amt = (count % 3 === 0) ? 5000.0 : -500.0;
+pm.request.body.update(JSON.stringify({ amount: amt }));
+
+-------------------------------------------------------------------
+Place below code in Post-response script section
+(function() {
+  const MAX = 1000;
+  const envKey = "txCount";
+
+  // helper that sends one request and recurses
+  function sendNext() {
+    let count = parseInt(pm.environment.get(envKey), 10) || 0;
+    count++;
+    pm.environment.set(envKey, count);
+
+    // setting the amount
+    const amt = (count % 3 === 0) ? 6000.0 : -700.0;
+
+    // build the request
+    const req = {
+      url: pm.request.url.toString(),
+      method: pm.request.method,
+      header: [{ key: "Content-Type", value: "application/json" }],
+      body: {
+        mode: "raw",
+        raw: JSON.stringify({ amount: amt })
+      }
+    };
+    pm.sendRequest(req, function (err, res) {
+      if (err) {
+        console.error(`Txn #${count} errored:`, err);
+      } else {
+        console.log(`Txn #${count} → ${res.status}`);
+      }
+
+      if (count < MAX) {
+        sendNext();
+      } else {
+        pm.test("Audit triggered on 1000th txn", () => {
+          pm.expect(res.text())
+            .to.include("Transaction accepted");
+        });
+        pm.environment.unset(envKey);
+      }
+    });
+  }
+  sendNext();
+})();
